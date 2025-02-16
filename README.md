@@ -1,2 +1,3 @@
-# CleanArchitecture
-Learn Clean Architecture
+# はじめに
+このリポジトリは[手を動かしてわかるクリーンアーキテクチャ　ヘキサゴナルアーキテクチャによるクリーンなアプリケーション開発](https://book.impress.co.jp/books/1123101096)を勉強した結果を残すものです  
+自分なりの理解をpythonで実装していきます
