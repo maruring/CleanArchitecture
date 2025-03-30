@@ -24,7 +24,6 @@ export class ApiConstruct extends Construct {
             this,
             `${envName}-${projectName}-SendMoneyFunc`,
             {
-                architecture: aws_lambda.Architecture.X86_64,
                 runtime: aws_lambda.Runtime.NODEJS_20_X,
                 functionName: `${envName}-${projectName}-SendMoneyFunc`,
                 handler: 'sendMoneyHandler',
