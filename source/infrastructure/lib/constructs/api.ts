@@ -24,11 +24,12 @@ export class ApiConstruct extends Construct {
             this,
             `${envName}-${projectName}-SendMoneyFunc`,
             {
-                runtime: aws_lambda.Runtime.NODEJS_20_X,
+                runtime: aws_lambda.Runtime.NODEJS_22_X,
                 functionName: `${envName}-${projectName}-SendMoneyFunc`,
+                entry: '../../source/backend/src/handler.ts',
                 handler: 'sendMoneyHandler',
-                entry: '../backend/account.ts',
                 timeout: Duration.seconds(29),
+                projectRoot: "../../../"
             }
         )
         accountTable.grantFullAccess(sendMoneyFunc);
