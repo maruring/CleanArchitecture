@@ -2,11 +2,20 @@
  * アカウント操作系のハンドラー
  */
 
+// 独自モジュール
 import { SendMoneyController } from "./adaptor/in/web/sendMoneyController";
 
 export const sendMoneyHandler = (event: any) => {
     // 引数を抜き出す
-    console.log('hello sendMoneyHandler');
-    const sendMoneyController = new SendMoneyController(event)
-    sendMoneyController.sendMoney()
-}
+    console.info('Start SendMoney', event);
+    const sourceAccount = event.pathParameters.accountId;
+    const body = JSON.parse(event.body);
+    // パラメータの組み立て
+    const params = {
+        'sourceAccountId': sourceAccount,
+        'targetAccountId': body.targetAccount,
+        'sendMoneyValue': body.money
+    };
+    const sendMoneyController = new SendMoneyController(params);
+    sendMoneyController.sendMoney();
+};

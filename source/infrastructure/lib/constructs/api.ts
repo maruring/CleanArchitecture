@@ -45,10 +45,34 @@ export class ApiConstruct extends Construct {
             }
         )
 
+        const sendMoneyInputModel = restApi.addModel(
+            'sendMoneyInputModel',
+            {
+                contentType: 'application/json',
+                modelName: 'sendMoneyInputModel',
+                schema: {
+                    schema: aws_apigateway.JsonSchemaVersion.DRAFT4,
+                    title: 'sendMoneyInputModel',
+                    type: aws_apigateway.JsonSchemaType.OBJECT,
+                    properties: {
+                        targetAccount: {type: aws_apigateway.JsonSchemaType.STRING},
+                        money: {type: aws_apigateway.JsonSchemaType.NUMBER}
+                    },
+                    required: ['targetAccount', 'money']
+                }
+            }
+        )
+
         const restApiAccountResource = restApi.root.addResource('account');
-        restApiAccountResource.addMethod(
+        const restApiAccountIdResource = restApiAccountResource.addResource('{accountId}');
+        restApiAccountIdResource.addMethod(
             HttpMethod.POST,
-            new aws_apigateway.LambdaIntegration(sendMoneyFunc)
+            new aws_apigateway.LambdaIntegration(sendMoneyFunc),
+            {
+                requestModels: {
+                    'application/json': sendMoneyInputModel
+                }
+            }
         )
     }
 }

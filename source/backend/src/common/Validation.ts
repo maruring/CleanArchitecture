@@ -6,8 +6,8 @@ import { SendMoneyCommand } from "../application/port/in/SendMoneyCommand";
 
 export class Validation {
     static sendMoneyCommand(input: SendMoneyCommand) {
-        if (input.sourceAccount.getAccountId().length > 0) return false;
-        if (input.targetAccount.getAccountId().length > 0) return false;
+        if (input.sourceAccount.getAccountId().id > 0) return false;
+        if (input.targetAccount.getAccountId().id > 0) return false;
         if (typeof input.money.amount === "number" && input.money.amount > 0) return false;
 
         // 本来はここでエラーを投げる

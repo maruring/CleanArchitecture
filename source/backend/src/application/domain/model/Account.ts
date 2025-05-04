@@ -4,17 +4,25 @@
 
 import { Money } from "./Money";
 
+export class AccountId {
+    public readonly id: number;
+
+    constructor(id: number) {
+        this.id = id;
+    }
+}
+
 export class Account {
-    private accountId: string // 口座番号
+    private accountId: AccountId // 口座番号
     private balance: Money // 残高額
 
-    constructor(accountId: string, balance: Money) {
+    constructor(accountId: AccountId, balance: Money) {
         this.accountId = accountId
         this.balance = balance
     }
 
     //  getter
-    public getAccountId(): string {
+    public getAccountId(): AccountId {
         return this.accountId;
     }
 
