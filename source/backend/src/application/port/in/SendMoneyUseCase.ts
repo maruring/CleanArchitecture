@@ -5,5 +5,5 @@
 import { SendMoneyCommand } from "./SendMoneyCommand"
 
 export interface SendMoneyUseCase {
-    sendMoney(sendMoneyCommand: SendMoneyCommand): boolean
+    sendMoney(command: SendMoneyCommand): Promise<boolean>
 }

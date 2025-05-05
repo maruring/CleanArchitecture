@@ -10,8 +10,8 @@ import { SendMoneyUseCase } from "../../../application/port/in/SendMoneyUseCase"
 import { SendMoneyCommand } from "../../../application/port/in/SendMoneyCommand";
 
 interface SendMoneyInput {
-    sourceAccountId: number, 
-    targetAccountId: number,
+    sourceAccountId: string, 
+    targetAccountId: string,
     sendMoneyValue: number
 }
 
@@ -28,8 +28,11 @@ export class SendMoneyController {
         };
     }
 
-    sendMoney(): boolean {
+    public sendMoney(): Promise<boolean> {
         const command = new SendMoneyCommand(this.inputArgs.sourceAccountId, this.inputArgs.targetAccountId, this.inputArgs.money);
-        return this.sendMoneyUseCase.sendMoney(command);
+        console.log(command);
+        console.log(this.sendMoneyUseCase);
+        const response = this.sendMoneyUseCase.sendMoney(command);
+        return response;
     }
 }

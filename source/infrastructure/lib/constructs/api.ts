@@ -20,19 +20,22 @@ export class ApiConstruct extends Construct {
             accountTable
         } = props;
 
-        const sendMoneyFunc = new aws_lambda_nodejs.NodejsFunction(
+        const sendMoneyLambda = new aws_lambda_nodejs.NodejsFunction(
             this,
-            `${envName}-${projectName}-SendMoneyFunc`,
+            `${envName}-${projectName}-sendMoneyLambda`,
             {
                 runtime: aws_lambda.Runtime.NODEJS_22_X,
-                functionName: `${envName}-${projectName}-SendMoneyFunc`,
+                functionName: `${envName}-${projectName}-sendMoneyLambda`,
                 entry: '../../source/backend/src/handler.ts',
                 handler: 'sendMoneyHandler',
                 timeout: Duration.seconds(29),
-                projectRoot: "../../../"
+                projectRoot: "../../../",
+                environment: {
+                    'ACCOUNT_TABLE_NAME': accountTable.tableName
+                }
             }
         )
-        accountTable.grantFullAccess(sendMoneyFunc);
+        accountTable.grantFullAccess(sendMoneyLambda);
 
         const restApi = new aws_apigateway.RestApi(
             this,
@@ -67,7 +70,7 @@ export class ApiConstruct extends Construct {
         const restApiAccountIdResource = restApiAccountResource.addResource('{accountId}');
         restApiAccountIdResource.addMethod(
             HttpMethod.POST,
-            new aws_apigateway.LambdaIntegration(sendMoneyFunc),
+            new aws_apigateway.LambdaIntegration(sendMoneyLambda),
             {
                 requestModels: {
                     'application/json': sendMoneyInputModel

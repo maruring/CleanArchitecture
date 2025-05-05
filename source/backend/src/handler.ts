@@ -5,7 +5,7 @@
 // 独自モジュール
 import { SendMoneyController } from "./adaptor/in/web/sendMoneyController";
 
-export const sendMoneyHandler = (event: any) => {
+export const sendMoneyHandler = async(event: any) => {
     // 引数を抜き出す
     console.info('Start SendMoney', event);
     const sourceAccount = event.pathParameters.accountId;
@@ -17,5 +17,5 @@ export const sendMoneyHandler = (event: any) => {
         'sendMoneyValue': body.money
     };
     const sendMoneyController = new SendMoneyController(params);
-    sendMoneyController.sendMoney();
+    await sendMoneyController.sendMoney();
 };

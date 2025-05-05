@@ -5,9 +5,9 @@
 import { Money } from "./Money";
 
 export class AccountId {
-    public readonly id: number;
+    public readonly id: string;
 
-    constructor(id: number) {
+    constructor(id: string) {
         this.id = id;
     }
 }
