@@ -8,6 +8,9 @@ import { AccountId } from "@/application/domain/model/Account";
 import { Money } from "@/application/domain/model/Money";
 import { SendMoneyUseCase } from "../../../application/port/in/SendMoneyUseCase";
 import { SendMoneyCommand } from "../../../application/port/in/SendMoneyCommand";
+import { SendMoneyService } from "@/application/domain/service/SendMoneyService";
+import { LoadAccountPort } from "@/application/port/out/LoadAccountPort";
+import { AccountPersistenceAdapter } from "@/adaptor/out/persistence/AccountPersistenceAdapter";
 
 interface SendMoneyInput {
     sourceAccountId: string, 
@@ -26,12 +29,13 @@ export class SendMoneyController {
             targetAccountId: new AccountId(sendMoneyInput.targetAccountId),
             money: new Money(sendMoneyInput.sendMoneyValue)
         };
+        const loadAccountPort: LoadAccountPort = new AccountPersistenceAdapter();
+        this.sendMoneyUseCase = new SendMoneyService(loadAccountPort);
     }
 
     public sendMoney(): Promise<boolean> {
         const command = new SendMoneyCommand(this.inputArgs.sourceAccountId, this.inputArgs.targetAccountId, this.inputArgs.money);
-        console.log(command);
-        console.log(this.sendMoneyUseCase);
+        console.info('SendMoneyCommand', command);
         const response = this.sendMoneyUseCase.sendMoney(command);
         return response;
     }

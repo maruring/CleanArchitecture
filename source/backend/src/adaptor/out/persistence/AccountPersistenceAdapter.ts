@@ -2,7 +2,7 @@
  * 口座ドメイン関係の永続化アダプタ
  */
 
-import { GetCommand, GetCommandInput, GetCommandOutput } from "@aws-sdk/lib-dynamodb";
+import { GetCommand, GetCommandInput} from "@aws-sdk/lib-dynamodb";
 
 // 独自モジュール
 import { Account, AccountId } from "@/application/domain/model/Account";
