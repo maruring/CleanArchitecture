@@ -1,6 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { aws_dynamodb } from 'aws-cdk-lib';
+import { aws_dynamodb, RemovalPolicy } from 'aws-cdk-lib';
 
 // 独自モジュール
 import { AppParameter } from '../../bin/parameter';
@@ -27,7 +27,8 @@ export class DynamodbConstruct extends Construct {
                 name: 'id',
                 type: aws_dynamodb.AttributeType.STRING
             },
-            billingMode: aws_dynamodb.BillingMode.PROVISIONED
+            billingMode: aws_dynamodb.BillingMode.PROVISIONED,
+            removalPolicy: RemovalPolicy.DESTROY
         })
 
         this.accountTable = accountTable;

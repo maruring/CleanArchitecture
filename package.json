@@ -1,0 +1,11 @@
+{
+  "name": "cleanarchitecture",
+  "version": "1.0.0",
+  "description": "study celan arbhitecture",
+  "workspaces": [
+    "packages/infrastructure",
+    "packages/backend",
+    "packages/frontend"
+  ],
+  "license": "MIT"
+}

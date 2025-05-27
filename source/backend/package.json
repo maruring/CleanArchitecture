@@ -1,16 +1,18 @@
 {
-  "name": "clean-architecture-backend",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "study clean-architecture",
-  "main": "handler.ts",
+  "description": "backend source",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "esbuild handler.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/handler.mjs"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "seiya tanaka",
   "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.799.0",
+    "@aws-sdk/lib-dynamodb": "^3.321.1"
+  },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.148",
-    "esbuild": "^0.25.1"
+    "@types/node": "^22.15.3"
   }
 }

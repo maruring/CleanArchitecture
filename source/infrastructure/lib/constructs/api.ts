@@ -20,18 +20,22 @@ export class ApiConstruct extends Construct {
             accountTable
         } = props;
 
-        const sendMoneyFunc = new aws_lambda_nodejs.NodejsFunction(
+        const sendMoneyLambda = new aws_lambda_nodejs.NodejsFunction(
             this,
-            `${envName}-${projectName}-SendMoneyFunc`,
+            `${envName}-${projectName}-sendMoneyLambda`,
             {
-                runtime: aws_lambda.Runtime.NODEJS_20_X,
-                functionName: `${envName}-${projectName}-SendMoneyFunc`,
+                runtime: aws_lambda.Runtime.NODEJS_22_X,
+                functionName: `${envName}-${projectName}-sendMoneyLambda`,
+                entry: '../../source/backend/src/handler.ts',
                 handler: 'sendMoneyHandler',
-                entry: '../backend/account.ts',
                 timeout: Duration.seconds(29),
+                projectRoot: "../../../",
+                environment: {
+                    'ACCOUNT_TABLE_NAME': accountTable.tableName
+                }
             }
         )
-        accountTable.grantFullAccess(sendMoneyFunc);
+        accountTable.grantFullAccess(sendMoneyLambda);
 
         const restApi = new aws_apigateway.RestApi(
             this,
@@ -44,10 +48,34 @@ export class ApiConstruct extends Construct {
             }
         )
 
+        const sendMoneyInputModel = restApi.addModel(
+            'sendMoneyInputModel',
+            {
+                contentType: 'application/json',
+                modelName: 'sendMoneyInputModel',
+                schema: {
+                    schema: aws_apigateway.JsonSchemaVersion.DRAFT4,
+                    title: 'sendMoneyInputModel',
+                    type: aws_apigateway.JsonSchemaType.OBJECT,
+                    properties: {
+                        targetAccount: {type: aws_apigateway.JsonSchemaType.STRING},
+                        money: {type: aws_apigateway.JsonSchemaType.NUMBER}
+                    },
+                    required: ['targetAccount', 'money']
+                }
+            }
+        )
+
         const restApiAccountResource = restApi.root.addResource('account');
-        restApiAccountResource.addMethod(
+        const restApiAccountIdResource = restApiAccountResource.addResource('{accountId}');
+        restApiAccountIdResource.addMethod(
             HttpMethod.POST,
-            new aws_apigateway.LambdaIntegration(sendMoneyFunc)
+            new aws_apigateway.LambdaIntegration(sendMoneyLambda),
+            {
+                requestModels: {
+                    'application/json': sendMoneyInputModel
+                }
+            }
         )
     }
 }
