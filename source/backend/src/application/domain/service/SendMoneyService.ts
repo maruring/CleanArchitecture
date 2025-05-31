@@ -3,22 +3,22 @@
  */
 
 // 独自モジュール
-import { Account, AccountId } from "../model/Account";
-import { LoadAccountPort } from "@/application/port/out/LoadAccountPort";
+import { Account } from "../model/Account";
+import { AccountPersistenceAdapter } from "@/adaptor/out/persistence/AccountPersistenceAdapter";
 import { SendMoneyUseCase } from "../../port/in/SendMoneyUseCase";
 import { SendMoneyCommand } from "../../port/in/SendMoneyCommand";
 
 
 export class SendMoneyService implements SendMoneyUseCase {
-    private readonly loadAccountPort: LoadAccountPort;
+    private readonly loadAccountPort: AccountPersistenceAdapter
+    private readonly updateAccountStatePort: AccountPersistenceAdapter
 
-    constructor(loadAccountPort: LoadAccountPort){
-        this.loadAccountPort = loadAccountPort
+    constructor(){
+        this.loadAccountPort = new AccountPersistenceAdapter()
+        this.updateAccountStatePort = new AccountPersistenceAdapter()
     };
 
     async sendMoney(sendMoneyCommand: SendMoneyCommand) {
-        // 引数はSendMoneyCommandクラスでヴァリデーションがされている(入力値の妥当性確認済)
-
         // 口座情報の取得
         const sourceAccount: Account = await this.loadAccountPort.loadAccount(sendMoneyCommand.sourceAccountId);
         const targetAccount: Account = await this.loadAccountPort.loadAccount(sendMoneyCommand.targetAccountId);
@@ -28,6 +28,8 @@ export class SendMoneyService implements SendMoneyUseCase {
         targetAccount.deposit(sourceAccount, sendMoneyCommand.money);
 
         // DBへの保存
+        await this.updateAccountStatePort.updateAccountState(sourceAccount, sourceAccount.getBalance());
+        await this.updateAccountStatePort.updateAccountState(targetAccount, targetAccount.getBalance());
         
         return true;
     }

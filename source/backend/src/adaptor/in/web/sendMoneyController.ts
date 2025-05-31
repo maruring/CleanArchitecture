@@ -29,8 +29,7 @@ export class SendMoneyController {
             targetAccountId: new AccountId(sendMoneyInput.targetAccountId),
             money: new Money(sendMoneyInput.sendMoneyValue)
         };
-        const loadAccountPort: LoadAccountPort = new AccountPersistenceAdapter();
-        this.sendMoneyUseCase = new SendMoneyService(loadAccountPort);
+        this.sendMoneyUseCase = new SendMoneyService();
     }
 
     public sendMoney(): Promise<boolean> {

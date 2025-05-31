@@ -2,23 +2,25 @@
  * 口座ドメイン関係の永続化アダプタ
  */
 
-import { GetCommand, GetCommandInput} from "@aws-sdk/lib-dynamodb";
+import { GetCommandInput, UpdateCommandInput} from "@aws-sdk/lib-dynamodb";
 
 // 独自モジュール
 import { Account, AccountId } from "@/application/domain/model/Account";
 import { Money } from "@/application/domain/model/Money";
 import { LoadAccountPort } from "@/application/port/out/LoadAccountPort";
+import { UpdateAccountStatePort } from "@/application/port/out/UpdateAccountStatePort";
 import { getDynamodbClient } from "./client";
 import { getAccountTableName } from "@/common/Utilities";
 
-export class AccountPersistenceAdapter implements LoadAccountPort {
+const client = getDynamodbClient();
+// key=accountIdで存在チェック
+
+export class AccountPersistenceAdapter implements LoadAccountPort, UpdateAccountStatePort {
     public async loadAccount(accountId: AccountId): Promise<Account> {
-        const client = getDynamodbClient();
-        // key=accountIdで存在チェック
         const param: GetCommandInput = {
             TableName: getAccountTableName(),
             Key: {
-                'id': accountId.id
+                id: accountId.id
             }
         };
         console.debug('GetAccountParam', JSON.stringify(param));
@@ -31,5 +33,29 @@ export class AccountPersistenceAdapter implements LoadAccountPort {
         const account = response.Item;
 
         return new Account(account.id, new Money(account.balance));
+    };
+
+    public async updateAccountState(account: Account, money: Money): Promise<void> {
+        const param: UpdateCommandInput = {
+            TableName: getAccountTableName(),
+            Key: {
+                id: account.getAccountId()
+            },
+            ExpressionAttributeNames: {
+                '#balance': 'balance'
+            },
+            ExpressionAttributeValues: {
+                ':balance': money.amount
+            },
+            UpdateExpression: 'set #balance = :balance',
+            ReturnValues: 'ALL_NEW'
+        };
+
+        console.debug('UpdateAccountParam', JSON.stringify(param));
+
+        const response = await client.update(param);
+        console.log('update res', response);
+
+        return;
     }
 }
