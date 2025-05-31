@@ -24,7 +24,8 @@ export class SendMoneyService implements SendMoneyUseCase {
         const targetAccount: Account = await this.loadAccountPort.loadAccount(sendMoneyCommand.targetAccountId);
 
         // モデルの更新
-        sourceAccount.withdraw(sourceAccount, sendMoneyCommand.money);
+        // Note: 口座金額が足りない場合はその場でエラーとする
+        if (!sourceAccount.withdraw(sourceAccount, sendMoneyCommand.money)) return false;
         targetAccount.deposit(sourceAccount, sendMoneyCommand.money);
 
         // DBへの保存

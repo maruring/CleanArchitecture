@@ -9,8 +9,6 @@ import { Money } from "@/application/domain/model/Money";
 import { SendMoneyUseCase } from "../../../application/port/in/SendMoneyUseCase";
 import { SendMoneyCommand } from "../../../application/port/in/SendMoneyCommand";
 import { SendMoneyService } from "@/application/domain/service/SendMoneyService";
-import { LoadAccountPort } from "@/application/port/out/LoadAccountPort";
-import { AccountPersistenceAdapter } from "@/adaptor/out/persistence/AccountPersistenceAdapter";
 
 interface SendMoneyInput {
     sourceAccountId: string, 
@@ -32,10 +30,10 @@ export class SendMoneyController {
         this.sendMoneyUseCase = new SendMoneyService();
     }
 
-    public sendMoney(): Promise<boolean> {
+    public async sendMoney(): Promise<boolean> {
         const command = new SendMoneyCommand(this.inputArgs.sourceAccountId, this.inputArgs.targetAccountId, this.inputArgs.money);
         console.info('SendMoneyCommand', command);
-        const response = this.sendMoneyUseCase.sendMoney(command);
+        const response = await this.sendMoneyUseCase.sendMoney(command);
         return response;
     }
 }
