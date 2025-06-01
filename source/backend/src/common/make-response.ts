@@ -48,9 +48,9 @@ export const makeSucessResponse = (statusCode: StatusCode, body: any, requestId:
 export const mekeErrorResponse = (error: Error | BackendApiError, requestId: string): Response => {
     headers['x-requestId'] = requestId;
     if (error?.name === 'BackendApiError') {
-        error as BackendApiError
+        const backendError = error as BackendApiError;
         return {
-            statusCode: error?.statusCode,
+            statusCode: backendError.statusCode,
             body: JSON.stringify({message: error.message}),
             headers: headers
         }

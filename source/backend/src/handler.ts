@@ -30,7 +30,7 @@ export const sendMoneyHandler = async(event: any) => {
         );
     } catch (e) {
         console.error(e);
-        return 
+        return mekeErrorResponse(e as Error, requestId);
     } finally {
         console.info('End SendMoney', event);
     }
