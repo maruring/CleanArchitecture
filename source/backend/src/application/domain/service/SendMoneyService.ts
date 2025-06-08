@@ -4,6 +4,7 @@
 
 // 独自モジュール
 import { Account } from "../model/Account";
+import { Activity } from "../model/Activity";
 import { AccountPersistenceAdapter } from "@/adaptor/out/persistence/AccountPersistenceAdapter";
 import { SendMoneyUseCase } from "../../port/in/SendMoneyUseCase";
 import { SendMoneyCommand } from "../../port/in/SendMoneyCommand";
@@ -31,6 +32,17 @@ export class SendMoneyService implements SendMoneyUseCase {
         // DBへの保存
         await this.updateAccountStatePort.updateAccountState(sourceAccount, sourceAccount.getBalance());
         await this.updateAccountStatePort.updateAccountState(targetAccount, targetAccount.getBalance());
+
+        // 口座間取引履歴のモデルの作成
+        const activity = new Activity(
+            crypto.randomUUID(),
+            sourceAccount.getAccountId(),
+            targetAccount.getAccountId(),
+            sendMoneyCommand.money,
+            new Date(Date.now())
+        );
+        // 口座間取引履歴のモデルの保存
+        await this.updateAccountStatePort.updateActivity(activity);
         
         return true;
     }

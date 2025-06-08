@@ -25,7 +25,8 @@ export class MainStack extends cdk.Stack {
     const apiConstruct = new ApiConstruct(this, "Api", {
       projectName: projectName,
       envName: envName,
-      accountTable: dynamodbConstruct.accountTable
+      accountTable: dynamodbConstruct.accountTable,
+      activityTable: dynamodbConstruct.activityTable
     })
   }
 }

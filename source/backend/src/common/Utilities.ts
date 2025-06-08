@@ -16,3 +16,7 @@ export const getDbRegion = () => {
 export const getAccountTableName = () => {
     return process.env['ACCOUNT_TABLE_NAME'];
 }
+
+export const getActivityTableName = () => {
+    return process.env['ACTIVITY_TABLE_NAME'];
+}

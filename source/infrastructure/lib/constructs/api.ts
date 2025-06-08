@@ -8,6 +8,7 @@ interface ApiConstructProps {
     projectName: string;
     envName: 'dev' | 'stg' | 'prd';
     accountTable: aws_dynamodb.Table;
+    activityTable: aws_dynamodb.Table;
 }
 
 export class ApiConstruct extends Construct {
@@ -17,7 +18,8 @@ export class ApiConstruct extends Construct {
         const {
             projectName,
             envName,
-            accountTable
+            accountTable,
+            activityTable
         } = props;
 
         const sendMoneyLambda = new aws_lambda_nodejs.NodejsFunction(
@@ -31,11 +33,13 @@ export class ApiConstruct extends Construct {
                 timeout: Duration.seconds(29),
                 projectRoot: "../../../",
                 environment: {
-                    'ACCOUNT_TABLE_NAME': accountTable.tableName
+                    'ACCOUNT_TABLE_NAME': accountTable.tableName,
+                    'ACTIVITY_TABLE_NAME': activityTable.tableName
                 }
             }
         )
         accountTable.grantFullAccess(sendMoneyLambda);
+        activityTable.grantFullAccess(sendMoneyLambda);
 
         const restApi = new aws_apigateway.RestApi(
             this,

@@ -12,6 +12,7 @@ interface DynamodbConstructProps {
 
 export class DynamodbConstruct extends Construct {
     public readonly accountTable: aws_dynamodb.Table
+    public readonly activityTable: aws_dynamodb.Table
 
     constructor(scope: Construct, id: string, props: DynamodbConstructProps) {
         super(scope, id);
@@ -32,5 +33,17 @@ export class DynamodbConstruct extends Construct {
         })
 
         this.accountTable = accountTable;
+
+        const activityTable = new aws_dynamodb.Table(this, `${envName}-ActivityTable`, {
+            tableName: `${envName}-${projectName}-activity`,
+            partitionKey: {
+                name: 'id',
+                type: aws_dynamodb.AttributeType.STRING
+            },
+            billingMode: aws_dynamodb.BillingMode.PROVISIONED,
+            removalPolicy: RemovalPolicy.DESTROY
+        })
+
+        this.activityTable = activityTable; 
     }
 }
