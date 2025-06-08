@@ -17,7 +17,7 @@
       "inlineSources": true,
       "experimentalDecorators": true,
       "strictPropertyInitialization": false,
-      "types": ["vitest/globals"],
+      // "types": ["vitest/globals"],
       "incremental": true,
       // Vitest v1 導入に伴うワークアラウンド
       // ESM 対応ではなく d.ts ファイルの型チェックのスキップによりエラーを回避する
