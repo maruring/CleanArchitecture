@@ -4,13 +4,15 @@
   "description": "backend source",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "author": "seiya tanaka",
   "license": "MIT",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.799.0",
-    "@aws-sdk/lib-dynamodb": "^3.321.1"
+    "@aws-sdk/lib-dynamodb": "^3.321.1",
+    "vitest": "^3.2.4"
   },
   "devDependencies": {
     "@types/node": "^22.15.3"
